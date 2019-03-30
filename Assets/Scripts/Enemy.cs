@@ -17,7 +17,6 @@ public class Enemy : MonoBehaviour
     {
         currentEnemyHealth = maxEnemyHealth;
         if (playerPosition == null) { playerPosition = GameManager.instance.player.transform; }
-        transform.position = new Vector3(Random.Range(10, 10), Random.Range(10, 10), 1);
         moveSpeed = Random.Range(minRandomMoveSpeed, maxRandomMoveSpeed);
     }
 
@@ -28,8 +27,7 @@ public class Enemy : MonoBehaviour
     }
 
     private void Update()
-    {
-        
+    {        
         transform.position = Vector3.MoveTowards(transform.position, playerPosition.position, moveSpeed * Time.deltaTime);
     }
 

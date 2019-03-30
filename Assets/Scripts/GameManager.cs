@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -13,6 +14,8 @@ public class GameManager : MonoBehaviour
     public GameObject[] enemyObjectPool = new GameObject[5];
 
     public static GameManager instance;
+
+    private float cameraCornerDis;
 
 
 
@@ -30,7 +33,14 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         InitializeObjectPool();
+        GetCameraCornerDis();
         StartCoroutine("Spawning");
+    }
+
+    private void GetCameraCornerDis()
+    {
+        Vector3 corner = Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, Camera.main.nearClipPlane));
+        cameraCornerDis = Vector3.Distance( player.transform.position, corner);
     }
 
     private void Update()
@@ -42,7 +52,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < enemyObjectPool.Length; i++)
         {
-            GameObject go = Instantiate(enemyPrefab);
+            GameObject go = Instantiate(enemyPrefab, transform.position , Quaternion.identity);
             enemyObjectPool[i] = go;
             go.SetActive(false);
         }
@@ -55,7 +65,7 @@ public class GameManager : MonoBehaviour
             if (!enemyObjectPool[i].activeSelf)
             {
                 enemyObjectPool[i].SetActive(true);
-                enemyObjectPool[i].transform.position = Random.insideUnitCircle.normalized * 10;
+                enemyObjectPool[i].transform.position = UnityEngine.Random.insideUnitCircle.normalized * cameraCornerDis;
                 
                 break;
             }

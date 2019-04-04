@@ -174,7 +174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxEnemyHealth: 1
   currentEnemyHealth: 0
-  minRandomMoveSpeed: 1
+  minRandomMoveSpeed: 2
   maxRandomMoveSpeed: 3
   playerPosition: {fileID: 0}
 --- !u!1 &5137277093988945777

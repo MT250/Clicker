@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,8 +18,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     private float cameraCornerDis;
-
-
+    private int topScore;
 
     private GameManager() //Disable ability to break singleton
     {
@@ -35,6 +36,21 @@ public class GameManager : MonoBehaviour
         InitializeObjectPool();
         GetCameraCornerDis();
         StartCoroutine("Spawning");
+        GetTopScore();
+    }
+
+    private void GetTopScore()
+    {
+        string path = Application.persistentDataPath + "/TopScore.score";
+        BinaryFormatter binFormatter = new BinaryFormatter();
+        FileStream fileStream = new FileStream(path, FileMode.Open);
+
+        if (File.Exists(path))
+        {
+            topScore = (int)binFormatter.Deserialize(fileStream);
+        }
+
+        fileStream.Close();
     }
 
     private void GetCameraCornerDis()
@@ -78,12 +94,26 @@ public class GameManager : MonoBehaviour
 
     void HealthCheck()
     {
-        //TODO Not called when player health = 0
         if (player.playerCurrentHealth == 0)
         {
             Time.timeScale = 0f;
             StopCoroutine("Spawning");
             uiController.gameOverText.SetActive(true);
+            SaveScore();
         }
+    }
+
+    void SaveScore()
+    {
+        string savePath = Application.persistentDataPath + "/TopScore.score";
+        BinaryFormatter binFormatter = new BinaryFormatter();
+        FileStream fileStream = new FileStream(savePath, FileMode.Create);
+
+
+        if (File.Exists(savePath))
+        {
+            binFormatter.Serialize(fileStream, score);
+            fileStream.Close();            
+        }       
     }
 }

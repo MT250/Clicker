@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -98,22 +99,32 @@ public class GameManager : MonoBehaviour
         {
             Time.timeScale = 0f;
             StopCoroutine("Spawning");
+            player.gameObject.SetActive(false);
             uiController.gameOverText.SetActive(true);
             SaveScore();
         }
     }
 
-    void SaveScore()
+    public void SaveScore()
     {
-        string savePath = Application.persistentDataPath + "/TopScore.score";
-        BinaryFormatter binFormatter = new BinaryFormatter();
-        FileStream fileStream = new FileStream(savePath, FileMode.Create);
-
-
-        if (File.Exists(savePath))
+        if (score > topScore)
         {
-            binFormatter.Serialize(fileStream, score);
-            fileStream.Close();            
-        }       
+            string savePath = Application.persistentDataPath + "/TopScore.score";
+            BinaryFormatter binFormatter = new BinaryFormatter();
+            FileStream fileStream = new FileStream(savePath, FileMode.Create);
+
+
+            if (File.Exists(savePath))
+            {
+                binFormatter.Serialize(fileStream, score);
+                fileStream.Close();
+            }
+        }
     }
+
+    public void BackToMainMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
 }

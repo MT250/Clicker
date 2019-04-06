@@ -11,6 +11,9 @@ public class UI_Controller : MonoBehaviour
     public GameManager gameManager;
     public Player player;
 
+    public bool isPaused = false;
+    public GameObject menu;
+
     void Update()
     {
         SetValuesToUIText();
@@ -23,8 +26,28 @@ public class UI_Controller : MonoBehaviour
         HealthText.text = "HP: " + player.playerCurrentHealth.ToString();
     }
 
-    void SetBordersPositions()
+    public void MenuButton()
     {
-        
+        if (!isPaused)
+        {
+            isPaused = true;
+            Time.timeScale = 0f;
+            menu.SetActive(true);
+            player.gameObject.SetActive(false);
+        }
+        else
+        {
+            isPaused = false;
+            Time.timeScale = 1f;
+            menu.SetActive(false);
+            player.gameObject.SetActive(true);
+        }
+
+    }
+
+    public void ExitGame()
+    {
+        gameManager.SaveScore();
+        gameManager.BackToMainMenu();
     }
 }
